@@ -1,4 +1,4 @@
-package com.example.retrofitlist;
+package com.example.retrofitlist.model.pojo;
 import com.google.gson.annotations.SerializedName;
 
 

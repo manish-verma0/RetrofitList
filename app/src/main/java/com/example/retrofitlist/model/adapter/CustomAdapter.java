@@ -1,6 +1,5 @@
-package com.example.retrofitlist;
+package com.example.retrofitlist.model.adapter;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -9,7 +8,9 @@ import android.view.ViewGroup;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.retrofitlist.R;
 import com.example.retrofitlist.databinding.CustomRowBinding;
+import com.example.retrofitlist.model.pojo.RetroPhoto;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        CustomRowBinding customRowBinding= DataBindingUtil.inflate(layoutInflater,R.layout.custom_row,parent,false);
+        CustomRowBinding customRowBinding= DataBindingUtil.inflate(layoutInflater, R.layout.custom_row,parent,false);
         return new CustomViewHolder(customRowBinding);
 
     }

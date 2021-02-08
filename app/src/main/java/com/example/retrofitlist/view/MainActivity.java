@@ -1,4 +1,4 @@
-package com.example.retrofitlist;
+package com.example.retrofitlist.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -7,25 +7,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.retrofitlist.R;
+import com.example.retrofitlist.controller.Controller;
 import com.example.retrofitlist.databinding.ActivityMainBinding;
+import com.example.retrofitlist.model.adapter.CustomAdapter;
+import com.example.retrofitlist.model.api.GetDataService;
+import com.example.retrofitlist.model.pojo.RetroPhoto;
+import com.example.retrofitlist.model.api.RetrofitClientInstance;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Controller.RetroPhotoListener {
 
 
     private CustomAdapter adapter;
     ActivityMainBinding activityMainBinding;
     RecyclerView recyclerView;
+    Controller controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityMainBinding= DataBindingUtil.setContentView(this,R.layout.activity_main);
+        activityMainBinding= DataBindingUtil.setContentView(this, R.layout.activity_main);
+        controller=new Controller(MainActivity.this);
+        controller.startFetching();
         setupRecyclerView();
        /* adapter = new CustomAdapter(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
@@ -33,10 +42,24 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding.customRecyclerView.setAdapter(adapter);*/
 
 
-        GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+        /*GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
 
+        service.getAllPhotos()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<RetroPhoto>>() {
+                    @Override
+                    public void onSuccess(List<RetroPhoto> photos) {
+                        generateDataList(photos);
+                    }
 
-        Call<List<RetroPhoto>> call = service.getAllPhotos();
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(MainActivity.this,"Error :"+e,Toast.LENGTH_LONG).show();
+                    }
+                });*/
+
+        /*Call<List<RetroPhoto>> call = service.getAllPhotos();
         call.enqueue(new Callback<List<RetroPhoto>>() {
 
             @Override
@@ -69,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<List<RetroPhoto>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
     private void setupRecyclerView() {
         recyclerView= activityMainBinding.customRecyclerView;
@@ -90,5 +113,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    public void onFetchComplete(List<RetroPhoto> list) {
+        generateDataList(list);
+    }
+
+    @Override
+    public void onError(Throwable t) {
+        Toast.makeText(MainActivity.this,"ERROR: "+t,Toast.LENGTH_LONG).show();
     }
 }
